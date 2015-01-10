@@ -12,6 +12,9 @@ github.init = function(){
   github.pull_requests = {
     element: $("#pull_requests")
   }
+  github.contributors = {
+    element: $("#contributors")
+  }
 
   // If there's an #issues element on the page, look for the repo's
   // GitHub API base URL in a data attribute
@@ -22,6 +25,8 @@ github.init = function(){
     // Set up API URLs
     github.issues.api_url = github.issues.element.data().ghapi+"/issues?per_page=1"
     github.pull_requests.api_url = github.issues.element.data().ghapi+"/pulls?per_page=1"
+    github.contributors.api_url = github.issues.element.data().ghapi+"/contributors"
+
 
     // Start with pull requests
     github.getPullRequests()
@@ -36,6 +41,14 @@ github.getPullRequests = function() {
     } catch (er) {
       github.pull_requests.count = pull_requests.length
     }
+    github.getContributors()
+  })
+}
+
+github.getContributors = function() {
+  $.getJSON(github.contributors.api_url)
+  .done(function(contributors, textStatus, xhr) {
+    github.contributors.count = contributors.length;
     github.getIssues()
   })
 }
@@ -58,6 +71,27 @@ github.getIssues = function(){
 
 github.render = function() {
   var label
+  switch (github.contributors.count) {
+    case undefined:
+    case null:
+    case false:
+    case "":
+      return
+      break
+    case 0:
+      label = "No contributors"
+      break
+    case 1:
+      label = "One contributor"
+      break
+    default:
+      label = github.contributors.count + " contributors"
+      break
+  }
+
+  github.contributors.element.find("a").text(label)
+  github.contributors.element.show()
+
   switch (github.issues.count) {
     case undefined:
     case null:

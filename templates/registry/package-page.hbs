@@ -70,8 +70,14 @@
       <li><strong class="pretty-number">{{downloads.month}}</strong> {{pluralize downloads.month "downloads"}} in the last month</li>
     {{/if}}
 
+    {{#if repository.url}}
+      <li id="contributors" {{#if ghapi}}data-ghapi="{{ghapi}}"{{/if}} style="display:none">
+        <a href="{{repository.url}}/graphs/contributors"></a> on GitHub
+      </li>
+    {{/if}}
+
     {{#if bugs.url}}
-      <li id="issues" {{#if ghapi}}data-ghapi="{{ghapi}}"{{/if}}>
+      <li id="issues" >
         <span class="original">Have an issue? <a href="{{bugs.url}}">File it.</a></span>
         {{#if ghapi}}
           <span class="enhanced" style="display:none">
